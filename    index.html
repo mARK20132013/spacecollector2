@@ -1,0 +1,1758 @@
+{\rtf1\ansi\ansicpg1251\cocoartf2580
+\cocoatextscaling0\cocoaplatform0{\fonttbl\f0\fswiss\fcharset0 Helvetica;\f1\fnil\fcharset0 LucidaGrande;\f2\fnil\fcharset0 AppleColorEmoji;
+}
+{\colortbl;\red255\green255\blue255;}
+{\*\expandedcolortbl;;}
+\paperw11900\paperh16840\margl1440\margr1440\vieww11520\viewh8400\viewkind0
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural\partightenfactor0
+
+\f0\fs24 \cf0 <!DOCTYPE html>\
+<html lang="ru">\
+<head>\
+    <meta charset="UTF-8">\
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">\
+    <title>\uc0\u1050 \u1086 \u1089 \u1084 \u1080 \u1095 \u1077 \u1089 \u1082 \u1080 \u1081  \u1084 \u1091 \u1089 \u1086 \u1088 \u1097 \u1080 \u1082  PRO</title>\
+    <style>\
+        * \{\
+            margin: 0;\
+            padding: 0;\
+            box-sizing: border-box;\
+            touch-action: manipulation;\
+        \}\
+        \
+        body \{\
+            margin: 0;\
+            overflow: hidden;\
+            background-color: #000;\
+            font-family: Arial, sans-serif;\
+            display: flex;\
+            justify-content: center;\
+            align-items: center;\
+            height: 100vh;\
+            color: white;\
+            transition: background-color 0.3s;\
+            position: relative;\
+        \}\
+        \
+        body.light-mode \{\
+            background-color: #f0f0f0;\
+            color: #333;\
+        \}\
+        \
+        #gameCanvas \{\
+            border: 2px solid #444;\
+            transition: background-color 0.3s;\
+            max-width: 100%;\
+            max-height: 100%;\
+        \}\
+        \
+        #ui \{\
+            position: absolute;\
+            top: 10px;\
+            left: 10px;\
+            font-size: 18px;\
+            text-shadow: 2px 2px 4px black;\
+            pointer-events: none;\
+        \}\
+        \
+        #hearts \{\
+            position: absolute;\
+            top: 60px;\
+            left: 10px;\
+            display: flex;\
+            gap: 5px;\
+            pointer-events: none;\
+        \}\
+        \
+        .heart \{\
+            width: 20px;\
+            height: 20px;\
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%23e74c3c"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>');\
+            background-size: contain;\
+        \}\
+        \
+        #trophies \{\
+            position: absolute;\
+            top: 90px;\
+            left: 10px;\
+            display: flex;\
+            gap: 5px;\
+            pointer-events: none;\
+        \}\
+        \
+        .trophy \{\
+            width: 20px;\
+            height: 20px;\
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%23f1c40f"><path d="M19 5h-2V3H7v2H5c-1.1 0-2 .9-2 2v1c0 2.55 1.92 4.63 4.39 4.94.63 1.5 1.98 2.63 3.61 2.96V19H7v2h10v-2h-4v-3.1c1.63-.33 2.98-1.46 3.61-2.96C19.08 12.63 21 10.55 21 8V7c0-1.1-.9-2-2-2zM5 8V7h2v3.82C5.84 10.4 5 9.3 5 8zm14 0c0 1.3-.84 2.4-2 2.82V7h2v1z"/></svg>');\
+            background-size: contain;\
+        \}\
+        \
+        #upgradeMenu \{\
+            position: absolute;\
+            right: 10px;\
+            top: 10px;\
+            background: rgba(0,0,0,0.7);\
+            padding: 10px;\
+            border-radius: 5px;\
+            display: none;\
+            z-index: 10;\
+            max-width: 80%;\
+        \}\
+        \
+        #unloadZone \{\
+            position: absolute;\
+            left: 10px;\
+            bottom: 10px;\
+            background: rgba(0,0,0,0.7);\
+            padding: 10px;\
+            border-radius: 5px;\
+            z-index: 5;\
+            width: 200px;\
+            max-width: 90%;\
+        \}\
+        \
+        #settingsMenu \{\
+            position: absolute;\
+            right: 10px;\
+            top: 10px;\
+            background: rgba(0,0,0,0.7);\
+            padding: 10px;\
+            border-radius: 5px;\
+            display: none;\
+            z-index: 10;\
+            width: 220px;\
+            max-width: 80%;\
+        \}\
+        \
+        .light-mode #settingsMenu,\
+        .light-mode #upgradeMenu,\
+        .light-mode #unloadZone \{\
+            background: rgba(255,255,255,0.9);\
+            color: #333;\
+            box-shadow: 0 0 10px rgba(0,0,0,0.2);\
+        \}\
+        \
+        #startScreen, #gameOverScreen \{\
+            position: absolute;\
+            width: 100%;\
+            height: 100%;\
+            background-color: rgba(0, 0, 0, 0.8);\
+            display: flex;\
+            flex-direction: column;\
+            justify-content: center;\
+            align-items: center;\
+            z-index: 5;\
+            transition: background-color 0.3s;\
+            text-align: center;\
+            padding: 20px;\
+        \}\
+        \
+        .light-mode #startScreen,\
+        .light-mode #gameOverScreen \{\
+            background-color: rgba(240, 240, 240, 0.9);\
+            color: #333;\
+        \}\
+        \
+        #gameOverScreen \{\
+            display: none;\
+        \}\
+        \
+        h1 \{\
+            color: #4fc3f7;\
+            font-size: 36px;\
+            margin-bottom: 20px;\
+        \}\
+        \
+        .light-mode h1 \{\
+            color: #0288d1;\
+        \}\
+        \
+        button \{\
+            padding: 12px 24px;\
+            font-size: 18px;\
+            background-color: #4fc3f7;\
+            color: #111;\
+            border: none;\
+            border-radius: 5px;\
+            cursor: pointer;\
+            margin-top: 20px;\
+            transition: all 0.3s;\
+        \}\
+        \
+        .light-mode button \{\
+            background-color: #0288d1;\
+            color: white;\
+        \}\
+        \
+        button:hover \{\
+            background-color: #0288d1;\
+        \}\
+        \
+        .light-mode button:hover \{\
+            background-color: #01579b;\
+        \}\
+        \
+        .upgrade-btn, .settings-btn \{\
+            display: block;\
+            width: 100%;\
+            margin: 5px 0;\
+            padding: 8px;\
+            font-size: 14px;\
+        \}\
+        \
+        .color-option \{\
+            display: inline-block;\
+            width: 20px;\
+            height: 20px;\
+            margin: 5px;\
+            cursor: pointer;\
+            border: 2px solid transparent;\
+            transition: all 0.2s;\
+        \}\
+        \
+        .color-option:hover \{\
+            transform: scale(1.2);\
+        \}\
+        \
+        .color-option.selected \{\
+            border: 2px solid white;\
+            transform: scale(1.1);\
+        \}\
+        \
+        .light-mode .color-option.selected \{\
+            border: 2px solid #333;\
+        \}\
+        \
+        .boss-health \{\
+            position: absolute;\
+            bottom: 20px;\
+            left: 50%;\
+            transform: translateX(-50%);\
+            width: 300px;\
+            height: 20px;\
+            background: #333;\
+            border-radius: 10px;\
+            overflow: hidden;\
+            max-width: 80%;\
+        \}\
+        \
+        .boss-health-bar \{\
+            height: 100%;\
+            background: #e74c3c;\
+            width: 100%;\
+        \}\
+        \
+        .time-mode \{\
+            display: flex;\
+            flex-direction: column;\
+            gap: 5px;\
+            margin: 10px 0;\
+        \}\
+        \
+        .time-btn \{\
+            padding: 5px 10px;\
+            font-size: 14px;\
+            text-align: left;\
+        \}\
+        \
+        .time-btn.selected \{\
+            background-color: #0288d1;\
+            color: white;\
+        \}\
+        \
+        .light-mode .time-btn.selected \{\
+            background-color: #01579b;\
+        \}\
+        \
+        #settingsButton \{\
+            position: absolute;\
+            right: 10px;\
+            top: 10px;\
+            background: rgba(0,0,0,0.5);\
+            border: none;\
+            color: white;\
+            padding: 5px 10px;\
+            border-radius: 5px;\
+            cursor: pointer;\
+            z-index: 10;\
+        \}\
+        \
+        .light-mode #settingsButton \{\
+            background: rgba(255,255,255,0.7);\
+            color: #333;\
+        \}\
+        \
+        #restartButtonGame \{\
+            position: absolute;\
+            right: 10px;\
+            top: 50px;\
+            background: rgba(0,0,0,0.5);\
+            border: none;\
+            color: white;\
+            padding: 5px 10px;\
+            border-radius: 5px;\
+            cursor: pointer;\
+            z-index: 10;\
+            display: none;\
+        \}\
+        \
+        .light-mode #restartButtonGame \{\
+            background: rgba(255,255,255,0.7);\
+            color: #333;\
+        \}\
+        \
+        .settings-section \{\
+            margin: 10px 0;\
+        \}\
+        \
+        .settings-title \{\
+            font-weight: bold;\
+            margin-bottom: 5px;\
+        \}\
+        \
+        .remaining-time \{\
+            font-size: 12px;\
+            color: #aaa;\
+            margin-left: 10px;\
+        \}\
+        \
+        .light-mode .remaining-time \{\
+            color: #666;\
+        \}\
+        \
+        #mobileControls \{\
+            position: absolute;\
+            bottom: 20px;\
+            width: 100%;\
+            display: none;\
+            justify-content: center;\
+            gap: 10px;\
+            z-index: 5;\
+        \}\
+        \
+        .mobile-btn \{\
+            width: 60px;\
+            height: 60px;\
+            background: rgba(255,255,255,0.2);\
+            border-radius: 50%;\
+            display: flex;\
+            justify-content: center;\
+            align-items: center;\
+            color: white;\
+            font-size: 24px;\
+            user-select: none;\
+            -webkit-user-select: none;\
+        \}\
+        \
+        #fireBtn \{\
+            position: absolute;\
+            right: 20px;\
+            bottom: 20px;\
+            width: 80px;\
+            height: 80px;\
+            background: rgba(255,0,0,0.3);\
+            border-radius: 50%;\
+            display: none;\
+            justify-content: center;\
+            align-items: center;\
+            color: white;\
+            font-size: 24px;\
+            z-index: 5;\
+            user-select: none;\
+            -webkit-user-select: none;\
+        \}\
+        \
+        .game-mode \{\
+            display: flex;\
+            flex-direction: column;\
+            gap: 5px;\
+            margin: 10px 0;\
+        \}\
+        \
+        .game-mode-btn \{\
+            padding: 5px 10px;\
+            font-size: 14px;\
+            text-align: left;\
+        \}\
+        \
+        .game-mode-btn.selected \{\
+            background-color: #0288d1;\
+            color: white;\
+        \}\
+        \
+        .light-mode .game-mode-btn.selected \{\
+            background-color: #01579b;\
+        \}\
+        \
+        .cargo-display \{\
+            display: flex;\
+            flex-direction: column;\
+            align-items: center;\
+            margin-top: 10px;\
+        \}\
+        \
+        .cargo-bar \{\
+            width: 100%;\
+            height: 20px;\
+            background: #333;\
+            border-radius: 10px;\
+            overflow: hidden;\
+            margin-top: 5px;\
+        \}\
+        \
+        .cargo-bar-fill \{\
+            height: 100%;\
+            background: #4fc3f7;\
+            width: 0%;\
+            transition: width 0.3s;\
+        \}\
+        \
+        .light-mode .cargo-bar \{\
+            background: #ddd;\
+        \}\
+        \
+        .light-mode .cargo-bar-fill \{\
+            background: #0288d1;\
+        \}\
+        \
+        @media (max-width: 768px) \{\
+            h1 \{\
+                font-size: 24px;\
+            \}\
+            \
+            button \{\
+                padding: 10px 20px;\
+                font-size: 16px;\
+            \}\
+            \
+            #ui \{\
+                font-size: 14px;\
+            \}\
+            \
+            #mobileControls \{\
+                display: flex;\
+            \}\
+            \
+            #fireBtn \{\
+                display: flex;\
+            \}\
+            \
+            #unloadZone \{\
+                width: 150px;\
+                font-size: 14px;\
+            \}\
+        \}\
+    </style>\
+</head>\
+<body>\
+    <canvas id="gameCanvas"></canvas>\
+    \
+    <div id="ui">\
+        <div>\uc0\u1057 \u1095 \u1077 \u1090 : <span id="score">0</span></div>\
+        <div>\uc0\u1042 \u1088 \u1077 \u1084 \u1103 : <span id="time">0</span> \u1089 \u1077 \u1082 </div>\
+        <div>\uc0\u1043 \u1088 \u1091 \u1079 : <span id="cargo">0</span>/<span id="maxCargo">5</span></div>\
+        <div>\uc0\u1041 \u1088 \u1086 \u1085 \u1103 : <span id="armor">0</span></div>\
+    </div>\
+    \
+    <div id="hearts"></div>\
+    <div id="trophies"></div>\
+    \
+    <button id="settingsButton">\uc0\u1053 \u1072 \u1089 \u1090 \u1088 \u1086 \u1081 \u1082 \u1080 </button>\
+    <button id="restartButtonGame">\uc0\u1047 \u1072 \u1085 \u1086 \u1074 \u1086 </button>\
+    \
+    <div id="upgradeMenu">\
+        <h3>\uc0\u1059 \u1083 \u1091 \u1095 \u1096 \u1077 \u1085 \u1080 \u1103 </h3>\
+        <button class="upgrade-btn" id="upgradeSpeed">\uc0\u1057 \u1082 \u1086 \u1088 \u1086 \u1089 \u1090 \u1100  (+1) - 50 \u1086 \u1095 \u1082 \u1086 \u1074 </button>\
+        <button class="upgrade-btn" id="upgradeCargo">\uc0\u1043 \u1088 \u1091 \u1079 \u1086 \u1087 \u1086 \u1076 \u1098 \u1077 \u1084 \u1085 \u1086 \u1089 \u1090 \u1100  (+2) - 100 \u1086 \u1095 \u1082 \u1086 \u1074 </button>\
+        <button class="upgrade-btn" id="upgradeArmor">\uc0\u1041 \u1088 \u1086 \u1085 \u1103  (+25) - 75 \u1086 \u1095 \u1082 \u1086 \u1074 </button>\
+    </div>\
+    \
+    <div id="unloadZone">\
+        <h3>\uc0\u1047 \u1086 \u1085 \u1072  \u1074 \u1099 \u1075 \u1088 \u1091 \u1079 \u1082 \u1080 </h3>\
+        <div>\uc0\u1057 \u1086 \u1073 \u1088 \u1072 \u1085 \u1085 \u1099 \u1081  \u1084 \u1091 \u1089 \u1086 \u1088 :</div>\
+        <div class="cargo-display">\
+            <span id="cargoCount">0</span> / <span id="maxCargoCount">5</span>\
+            <div class="cargo-bar">\
+                <div class="cargo-bar-fill" id="cargoBar"></div>\
+            </div>\
+        </div>\
+    </div>\
+    \
+    <div id="settingsMenu">\
+        <h3>\uc0\u1053 \u1072 \u1089 \u1090 \u1088 \u1086 \u1081 \u1082 \u1080 </h3>\
+        \
+        <div class="settings-section">\
+            <div class="settings-title">\uc0\u1056 \u1077 \u1078 \u1080 \u1084 :</div>\
+            <button class="settings-btn" id="darkModeBtn">\uc0\u1058 \u1077 \u1084 \u1085 \u1099 \u1081  \u1088 \u1077 \u1078 \u1080 \u1084 </button>\
+            <button class="settings-btn" id="lightModeBtn">\uc0\u1057 \u1074 \u1077 \u1090 \u1083 \u1099 \u1081  \u1088 \u1077 \u1078 \u1080 \u1084 </button>\
+        </div>\
+        \
+        <div class="settings-section">\
+            <div class="settings-title">\uc0\u1062 \u1074 \u1077 \u1090  \u1082 \u1072 \u1088 \u1090 \u1099 :</div>\
+            <div class="color-option selected" style="background-color: #000000;" data-color="#000000"></div>\
+            <div class="color-option" style="background-color: #003300;" data-color="#003300"></div>\
+            <div class="color-option" style="background-color: #330000;" data-color="#330000"></div>\
+            <div class="color-option" style="background-color: #000033;" data-color="#000033"></div>\
+            <div class="color-option" style="background-color: #006666;" data-color="#006666"></div>\
+        </div>\
+        \
+        <div class="settings-section">\
+            <div class="settings-title">\uc0\u1056 \u1077 \u1078 \u1080 \u1084  \u1080 \u1075 \u1088 \u1099 :</div>\
+            <div class="game-mode">\
+                <button class="game-mode-btn selected" id="timeModeBtn">\uc0\u1053 \u1072  \u1074 \u1088 \u1077 \u1084 \u1103 </button>\
+                <button class="game-mode-btn" id="survivalModeBtn">\uc0\u1042 \u1099 \u1078 \u1080 \u1074 \u1072 \u1085 \u1080 \u1077 </button>\
+            </div>\
+        </div>\
+        \
+        <div class="settings-section" id="timeModeSection">\
+            <div class="settings-title">\uc0\u1042 \u1088 \u1077 \u1084 \u1077 \u1085 \u1085 \u1086 \u1081  \u1088 \u1077 \u1078 \u1080 \u1084 :</div>\
+            <div class="time-mode">\
+                <button class="time-btn selected" id="time60">60 \uc0\u1089 \u1077 \u1082 \u1091 \u1085 \u1076  <span class="remaining-time" id="remaining60">(\u1086 \u1089 \u1090 \u1072 \u1083 \u1086 \u1089 \u1100 : 60)</span></button>\
+                <button class="time-btn" id="time90">90 \uc0\u1089 \u1077 \u1082 \u1091 \u1085 \u1076  <span class="remaining-time" id="remaining90">(\u1086 \u1089 \u1090 \u1072 \u1083 \u1086 \u1089 \u1100 : 90)</span></button>\
+                <button class="time-btn" id="time120">120 \uc0\u1089 \u1077 \u1082 \u1091 \u1085 \u1076  <span class="remaining-time" id="remaining120">(\u1086 \u1089 \u1090 \u1072 \u1083 \u1086 \u1089 \u1100 : 120)</span></button>\
+            </div>\
+        </div>\
+        \
+        <button class="settings-btn" id="closeSettingsBtn">\uc0\u1047 \u1072 \u1082 \u1088 \u1099 \u1090 \u1100 </button>\
+    </div>\
+    \
+    <div id="startScreen">\
+        <h1>\uc0\u1050 \u1054 \u1057 \u1052 \u1048 \u1063 \u1045 \u1057 \u1050 \u1048 \u1049  \u1052 \u1059 \u1057 \u1054 \u1056 \u1065 \u1048 \u1050  PRO</h1>\
+        <p>\uc0\u1057 \u1086 \u1073 \u1080 \u1088 \u1072 \u1081 \u1090 \u1077  \u1084 \u1091 \u1089 \u1086 \u1088  \u1088 \u1072 \u1079 \u1085 \u1099 \u1093  \u1090 \u1080 \u1087 \u1086 \u1074 , \u1091 \u1083 \u1091 \u1095 \u1096 \u1072 \u1081 \u1090 \u1077  \u1082 \u1086 \u1088 \u1072 \u1073 \u1083 \u1100  \u1080  \u1089 \u1088 \u1072 \u1078 \u1072 \u1081 \u1090 \u1077 \u1089 \u1100  \u1089  \u1084 \u1091 \u1089 \u1086 \u1088 \u1085 \u1099 \u1084 \u1080  \u1084 \u1086 \u1085 \u1089 \u1090 \u1088 \u1072 \u1084 \u1080 !</p>\
+        \
+        <p>\uc0\u1059 \u1087 \u1088 \u1072 \u1074 \u1083 \u1077 \u1085 \u1080 \u1077 : WASD/\u1057 \u1090 \u1088 \u1077 \u1083 \u1082 \u1080  - \u1076 \u1074 \u1080 \u1078 \u1077 \u1085 \u1080 \u1077 , \u1055 \u1088 \u1086 \u1073 \u1077 \u1083  - \u1089 \u1090 \u1088 \u1077 \u1083 \u1100 \u1073 \u1072 , U - \u1084 \u1077 \u1085 \u1102  \u1091 \u1083 \u1091 \u1095 \u1096 \u1077 \u1085 \u1080 \u1081 </p>\
+        <p>\uc0\u1041 \u1086 \u1089 \u1089 \u1099  \u1087 \u1086 \u1103 \u1074 \u1083 \u1103 \u1102 \u1090 \u1089 \u1103  \u1082 \u1072 \u1078 \u1076 \u1099 \u1077  20 \u1089 \u1077 \u1082 \u1091 \u1085 \u1076 . \u1047 \u1072  \u1087 \u1086 \u1073 \u1077 \u1076 \u1091  \u1085 \u1072 \u1076  \u1073 \u1086 \u1089 \u1089 \u1086 \u1084  \u1074 \u1099  \u1087 \u1086 \u1083 \u1091 \u1095 \u1072 \u1077 \u1090 \u1077  \u1090 \u1088 \u1086 \u1092 \u1077 \u1081 .</p>\
+        <button id="startButton">\uc0\u1057 \u1058 \u1040 \u1056 \u1058 </button>\
+    </div>\
+    \
+    <div id="gameOverScreen">\
+        <h1>\uc0\u1048 \u1043 \u1056 \u1040  \u1054 \u1050 \u1054 \u1053 \u1063 \u1045 \u1053 \u1040 </h1>\
+        <p>\uc0\u1042 \u1072 \u1096  \u1089 \u1095 \u1077 \u1090 : <span id="finalScore">0</span></p>\
+        <p>\uc0\u1059 \u1085 \u1080 \u1095 \u1090 \u1086 \u1078 \u1077 \u1085 \u1086  \u1073 \u1086 \u1089 \u1089 \u1086 \u1074 : <span id="bossKills">0</span></p>\
+        <p>\uc0\u1058 \u1088 \u1086 \u1092 \u1077 \u1077 \u1074 : <span id="finalTrophies">0</span></p>\
+        <p>\uc0\u1042 \u1088 \u1077 \u1084 \u1103  \u1074 \u1099 \u1078 \u1080 \u1074 \u1072 \u1085 \u1080 \u1103 : <span id="survivalTime">0</span> \u1089 \u1077 \u1082 </p>\
+        <button id="restartButton">\uc0\u1048 \u1043 \u1056 \u1040 \u1058 \u1068  \u1057 \u1053 \u1054 \u1042 \u1040 </button>\
+    </div>\
+\
+    <div id="mobileControls">\
+        <div class="mobile-btn" id="mobileUp">
+\f1 \uc0\u8593 
+\f0 </div>\
+        <div class="mobile-btn" id="mobileLeft">
+\f1 \uc0\u8592 
+\f0 </div>\
+        <div class="mobile-btn" id="mobileDown">
+\f1 \uc0\u8595 
+\f0 </div>\
+        <div class="mobile-btn" id="mobileRight">
+\f1 \uc0\u8594 
+\f0 </div>\
+    </div>\
+    \
+    <div id="fireBtn">
+\f2 \uc0\u55357 \u56613 
+\f0 </div>\
+\
+    <script>\
+        // \uc0\u1048 \u1085 \u1080 \u1094 \u1080 \u1072 \u1083 \u1080 \u1079 \u1072 \u1094 \u1080 \u1103  \u1080 \u1075 \u1088 \u1099 \
+        const canvas = document.getElementById('gameCanvas');\
+        const ctx = canvas.getContext('2d');\
+        \
+        // \uc0\u1059 \u1089 \u1090 \u1072 \u1085 \u1086 \u1074 \u1082 \u1072  \u1088 \u1072 \u1079 \u1084 \u1077 \u1088 \u1086 \u1074  canvas \u1074  \u1079 \u1072 \u1074 \u1080 \u1089 \u1080 \u1084 \u1086 \u1089 \u1090 \u1080  \u1086 \u1090  \u1091 \u1089 \u1090 \u1088 \u1086 \u1081 \u1089 \u1090 \u1074 \u1072 \
+        function resizeCanvas() \{\
+            const size = Math.min(window.innerWidth, window.innerHeight * 1.5);\
+            canvas.width = size;\
+            canvas.height = size * 0.75;\
+        \}\
+        \
+        resizeCanvas();\
+        window.addEventListener('resize', resizeCanvas);\
+        \
+        // \uc0\u1069 \u1083 \u1077 \u1084 \u1077 \u1085 \u1090 \u1099  \u1080 \u1085 \u1090 \u1077 \u1088 \u1092 \u1077 \u1081 \u1089 \u1072 \
+        const scoreElement = document.getElementById('score');\
+        const timeElement = document.getElementById('time');\
+        const cargoElement = document.getElementById('cargo');\
+        const maxCargoElement = document.getElementById('maxCargo');\
+        const armorElement = document.getElementById('armor');\
+        const finalScoreElement = document.getElementById('finalScore');\
+        const bossKillsElement = document.getElementById('bossKills');\
+        const finalTrophiesElement = document.getElementById('finalTrophies');\
+        const survivalTimeElement = document.getElementById('survivalTime');\
+        const startScreen = document.getElementById('startScreen');\
+        const gameOverScreen = document.getElementById('gameOverScreen');\
+        const upgradeMenu = document.getElementById('upgradeMenu');\
+        const unloadZone = document.getElementById('unloadZone');\
+        const settingsMenu = document.getElementById('settingsMenu');\
+        const startButton = document.getElementById('startButton');\
+        const restartButton = document.getElementById('restartButton');\
+        const restartButtonGame = document.getElementById('restartButtonGame');\
+        const upgradeSpeedBtn = document.getElementById('upgradeSpeed');\
+        const upgradeCargoBtn = document.getElementById('upgradeCargo');\
+        const upgradeArmorBtn = document.getElementById('upgradeArmor');\
+        const time60Btn = document.getElementById('time60');\
+        const time90Btn = document.getElementById('time90');\
+        const time120Btn = document.getElementById('time120');\
+        const remaining60 = document.getElementById('remaining60');\
+        const remaining90 = document.getElementById('remaining90');\
+        const remaining120 = document.getElementById('remaining120');\
+        const settingsButton = document.getElementById('settingsButton');\
+        const darkModeBtn = document.getElementById('darkModeBtn');\
+        const lightModeBtn = document.getElementById('lightModeBtn');\
+        const closeSettingsBtn = document.getElementById('closeSettingsBtn');\
+        const colorOptions = document.querySelectorAll('.color-option');\
+        const heartsContainer = document.getElementById('hearts');\
+        const trophiesContainer = document.getElementById('trophies');\
+        const timeModeBtn = document.getElementById('timeModeBtn');\
+        const survivalModeBtn = document.getElementById('survivalModeBtn');\
+        const timeModeSection = document.getElementById('timeModeSection');\
+        const cargoCountElement = document.getElementById('cargoCount');\
+        const maxCargoCountElement = document.getElementById('maxCargoCount');\
+        const cargoBarElement = document.getElementById('cargoBar');\
+        \
+        // \uc0\u1052 \u1086 \u1073 \u1080 \u1083 \u1100 \u1085 \u1099 \u1077  \u1101 \u1083 \u1077 \u1084 \u1077 \u1085 \u1090 \u1099  \u1091 \u1087 \u1088 \u1072 \u1074 \u1083 \u1077 \u1085 \u1080 \u1103 \
+        const mobileUp = document.getElementById('mobileUp');\
+        const mobileLeft = document.getElementById('mobileLeft');\
+        const mobileDown = document.getElementById('mobileDown');\
+        const mobileRight = document.getElementById('mobileRight');\
+        const fireBtn = document.getElementById('fireBtn');\
+        \
+        // \uc0\u1048 \u1075 \u1088 \u1086 \u1074 \u1099 \u1077  \u1086 \u1073 \u1098 \u1077 \u1082 \u1090 \u1099 \
+        let player = \{\
+            x: canvas.width / 2,\
+            y: canvas.height / 2,\
+            radius: 20,\
+            speed: 5,\
+            baseSpeed: 5,\
+            angle: 0,\
+            cargo: 0,\
+            maxCargo: 5,\
+            armor: 0,\
+            health: 10,\
+            maxHealth: 10,\
+            fireRate: 0.5,\
+            fireCooldown: 0,\
+            upgrades: \{\
+                speed: 0,\
+                cargo: 0,\
+                armor: 0\
+            \}\
+        \};\
+        \
+        let station = \{\
+            x: canvas.width - 50,\
+            y: 50,\
+            radius: 30\
+        \};\
+        \
+        let trash = [];\
+        let asteroids = [];\
+        let particles = [];\
+        let bosses = [];\
+        let playerBullets = [];\
+        let bossBullets = [];\
+        let healthPacks = [];\
+        let score = 0;\
+        let gameTime = 60;\
+        let initialGameTime = 60;\
+        let lastTime = 0;\
+        let gameRunning = false;\
+        let keys = \{\};\
+        let bossKills = 0;\
+        let bossSpawnTimer = 0;\
+        let trophies = 0;\
+        let mapColor = '#000000';\
+        let timeModeChanged = false;\
+        let isMobile = false;\
+        let gameMode = 'time'; // 'time' \uc0\u1080 \u1083 \u1080  'survival'\
+        let survivalTime = 0;\
+\
+        // \uc0\u1055 \u1088 \u1086 \u1074 \u1077 \u1088 \u1082 \u1072  \u1084 \u1086 \u1073 \u1080 \u1083 \u1100 \u1085 \u1086 \u1075 \u1086  \u1091 \u1089 \u1090 \u1088 \u1086 \u1081 \u1089 \u1090 \u1074 \u1072 \
+        function checkMobile() \{\
+            isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);\
+        \}\
+\
+        // \uc0\u1058 \u1080 \u1087 \u1099  \u1084 \u1091 \u1089 \u1086 \u1088 \u1072 \
+        const TRASH_TYPES = \{\
+            COMMON: \{\
+                color: '#f1c40f',\
+                value: 10,\
+                radius: 8\
+            \},\
+            DANGEROUS: \{\
+                color: '#e74c3c',\
+                value: 25,\
+                radius: 12,\
+                damage: 10\
+            \},\
+            VALUABLE: \{\
+                color: '#2ecc71',\
+                value: 50,\
+                radius: 6\
+            \}\
+        \};\
+\
+        // \uc0\u1054 \u1073 \u1088 \u1072 \u1073 \u1086 \u1090 \u1095 \u1080 \u1082 \u1080  \u1089 \u1086 \u1073 \u1099 \u1090 \u1080 \u1081 \
+        startButton.addEventListener('click', startGame);\
+        restartButton.addEventListener('click', startGame);\
+        restartButtonGame.addEventListener('click', startGame);\
+        upgradeSpeedBtn.addEventListener('click', () => upgrade('speed'));\
+        upgradeCargoBtn.addEventListener('click', () => upgrade('cargo'));\
+        upgradeArmorBtn.addEventListener('click', () => upgrade('armor'));\
+\
+        time60Btn.addEventListener('click', () => selectTimeMode(60));\
+        time90Btn.addEventListener('click', () => selectTimeMode(90));\
+        time120Btn.addEventListener('click', () => selectTimeMode(120));\
+\
+        timeModeBtn.addEventListener('click', () => selectGameMode('time'));\
+        survivalModeBtn.addEventListener('click', () => selectGameMode('survival'));\
+\
+        settingsButton.addEventListener('click', toggleSettingsMenu);\
+        darkModeBtn.addEventListener('click', () => setDarkMode(true));\
+        lightModeBtn.addEventListener('click', () => setDarkMode(false));\
+        closeSettingsBtn.addEventListener('click', toggleSettingsMenu);\
+\
+        colorOptions.forEach(option => \{\
+            option.addEventListener('click', () => \{\
+                colorOptions.forEach(opt => opt.classList.remove('selected'));\
+                option.classList.add('selected');\
+                mapColor = option.dataset.color;\
+            \});\
+        \});\
+\
+        // \uc0\u1052 \u1086 \u1073 \u1080 \u1083 \u1100 \u1085 \u1099 \u1077  \u1101 \u1083 \u1077 \u1084 \u1077 \u1085 \u1090 \u1099  \u1091 \u1087 \u1088 \u1072 \u1074 \u1083 \u1077 \u1085 \u1080 \u1103 \
+        mobileUp.addEventListener('touchstart', () => keys['w'] = true);\
+        mobileUp.addEventListener('touchend', () => keys['w'] = false);\
+        mobileLeft.addEventListener('touchstart', () => keys['a'] = true);\
+        mobileLeft.addEventListener('touchend', () => keys['a'] = false);\
+        mobileDown.addEventListener('touchstart', () => keys['s'] = true);\
+        mobileDown.addEventListener('touchend', () => keys['s'] = false);\
+        mobileRight.addEventListener('touchstart', () => keys['d'] = true);\
+        mobileRight.addEventListener('touchend', () => keys['d'] = false);\
+        fireBtn.addEventListener('touchstart', () => keys[' '] = true);\
+        fireBtn.addEventListener('touchend', () => keys[' '] = false);\
+\
+        document.addEventListener('keydown', (e) => \{\
+            keys[e.key] = true;\
+            if (e.key === ' ' && gameRunning) \{\
+                fireBullet();\
+            \}\
+            if (e.key.toLowerCase() === 'u' && gameRunning) \{\
+                upgradeMenu.style.display = upgradeMenu.style.display === 'none' ? 'block' : 'none';\
+                if (settingsMenu.style.display === 'block') \{\
+                    settingsMenu.style.display = 'none';\
+                \}\
+            \}\
+        \});\
+\
+        document.addEventListener('keyup', (e) => \{\
+            keys[e.key] = false;\
+        \});\
+\
+        // \uc0\u1054 \u1073 \u1085 \u1086 \u1074 \u1083 \u1077 \u1085 \u1080 \u1077  \u1086 \u1090 \u1086 \u1073 \u1088 \u1072 \u1078 \u1077 \u1085 \u1080 \u1103  \u1075 \u1088 \u1091 \u1079 \u1072 \
+        function updateCargoDisplay() \{\
+            cargoCountElement.textContent = player.cargo;\
+            maxCargoCountElement.textContent = player.maxCargo;\
+            cargoBarElement.style.width = `$\{(player.cargo / player.maxCargo) * 100\}%`;\
+        \}\
+\
+        // \uc0\u1042 \u1099 \u1073 \u1086 \u1088  \u1088 \u1077 \u1078 \u1080 \u1084 \u1072  \u1080 \u1075 \u1088 \u1099 \
+        function selectGameMode(mode) \{\
+            gameMode = mode;\
+            timeModeBtn.classList.remove('selected');\
+            survivalModeBtn.classList.remove('selected');\
+            \
+            if (mode === 'time') \{\
+                timeModeBtn.classList.add('selected');\
+                timeModeSection.style.display = 'block';\
+            \} else \{\
+                survivalModeBtn.classList.add('selected');\
+                timeModeSection.style.display = 'none';\
+            \}\
+        \}\
+\
+        // \uc0\u1055 \u1077 \u1088 \u1077 \u1082 \u1083 \u1102 \u1095 \u1077 \u1085 \u1080 \u1077  \u1084 \u1077 \u1085 \u1102  \u1085 \u1072 \u1089 \u1090 \u1088 \u1086 \u1077 \u1082 \
+        function toggleSettingsMenu() \{\
+            settingsMenu.style.display = settingsMenu.style.display === 'none' ? 'block' : 'none';\
+            if (upgradeMenu.style.display === 'block') \{\
+                upgradeMenu.style.display = 'none';\
+            \}\
+            \
+            // \uc0\u1054 \u1073 \u1085 \u1086 \u1074 \u1083 \u1103 \u1077 \u1084  \u1086 \u1090 \u1086 \u1073 \u1088 \u1072 \u1078 \u1077 \u1085 \u1080 \u1077  \u1086 \u1089 \u1090 \u1072 \u1074 \u1096 \u1077 \u1075 \u1086 \u1089 \u1103  \u1074 \u1088 \u1077 \u1084 \u1077 \u1085 \u1080  \u1087 \u1088 \u1080  \u1086 \u1090 \u1082 \u1088 \u1099 \u1090 \u1080 \u1080  \u1084 \u1077 \u1085 \u1102 \
+            if (settingsMenu.style.display === 'block' && gameRunning) \{\
+                updateTimeButtons();\
+            \}\
+        \}\
+\
+        // \uc0\u1054 \u1073 \u1085 \u1086 \u1074 \u1083 \u1077 \u1085 \u1080 \u1077  \u1082 \u1085 \u1086 \u1087 \u1086 \u1082  \u1074 \u1088 \u1077 \u1084 \u1077 \u1085 \u1080 \
+        function updateTimeButtons() \{\
+            remaining60.textContent = `(\uc0\u1086 \u1089 \u1090 \u1072 \u1083 \u1086 \u1089 \u1100 : $\{Math.max(0, gameTime)\})`;\
+            remaining90.textContent = `(\uc0\u1086 \u1089 \u1090 \u1072 \u1083 \u1086 \u1089 \u1100 : $\{Math.max(0, gameTime + 30)\})`;\
+            remaining120.textContent = `(\uc0\u1086 \u1089 \u1090 \u1072 \u1083 \u1086 \u1089 \u1100 : $\{Math.max(0, gameTime + 60)\})`;\
+        \}\
+\
+        // \uc0\u1059 \u1089 \u1090 \u1072 \u1085 \u1086 \u1074 \u1082 \u1072  \u1090 \u1077 \u1084 \u1085 \u1086 \u1075 \u1086 /\u1089 \u1074 \u1077 \u1090 \u1083 \u1086 \u1075 \u1086  \u1088 \u1077 \u1078 \u1080 \u1084 \u1072 \
+        function setDarkMode(isDark) \{\
+            if (isDark) \{\
+                document.body.classList.remove('light-mode');\
+                localStorage.setItem('gameTheme', 'dark');\
+            \} else \{\
+                document.body.classList.add('light-mode');\
+                localStorage.setItem('gameTheme', 'light');\
+            \}\
+        \}\
+\
+        // \uc0\u1055 \u1088 \u1086 \u1074 \u1077 \u1088 \u1082 \u1072  \u1089 \u1086 \u1093 \u1088 \u1072 \u1085 \u1077 \u1085 \u1085 \u1086 \u1081  \u1090 \u1077 \u1084 \u1099 \
+        function checkSavedTheme() \{\
+            const savedTheme = localStorage.getItem('gameTheme');\
+            if (savedTheme === 'light') \{\
+                setDarkMode(false);\
+            \} else \{\
+                setDarkMode(true);\
+            \}\
+        \}\
+\
+        // \uc0\u1042 \u1099 \u1073 \u1086 \u1088  \u1088 \u1077 \u1078 \u1080 \u1084 \u1072  \u1074 \u1088 \u1077 \u1084 \u1077 \u1085 \u1080 \
+        function selectTimeMode(seconds) \{\
+            if (gameRunning) \{\
+                // \uc0\u1045 \u1089 \u1083 \u1080  \u1080 \u1075 \u1088 \u1072  \u1091 \u1078 \u1077  \u1080 \u1076 \u1077 \u1090 , \u1084 \u1077 \u1085 \u1103 \u1077 \u1084  \u1086 \u1089 \u1090 \u1072 \u1074 \u1096 \u1077 \u1077 \u1089 \u1103  \u1074 \u1088 \u1077 \u1084 \u1103 \
+                const timeDiff = seconds - initialGameTime;\
+                gameTime += timeDiff;\
+                \
+                // \uc0\u1054 \u1073 \u1085 \u1086 \u1074 \u1083 \u1103 \u1077 \u1084  \u1086 \u1090 \u1086 \u1073 \u1088 \u1072 \u1078 \u1077 \u1085 \u1080 \u1077  \u1074 \u1088 \u1077 \u1084 \u1077 \u1085 \u1080 \
+                timeElement.textContent = Math.max(0, Math.floor(gameTime));\
+                \
+                // \uc0\u1054 \u1073 \u1085 \u1086 \u1074 \u1083 \u1103 \u1077 \u1084  \u1082 \u1085 \u1086 \u1087 \u1082 \u1080  \u1074 \u1088 \u1077 \u1084 \u1077 \u1085 \u1080 \
+                updateTimeButtons();\
+            \}\
+            \
+            initialGameTime = seconds;\
+            time60Btn.classList.remove('selected');\
+            time90Btn.classList.remove('selected');\
+            time120Btn.classList.remove('selected');\
+            \
+            if (seconds === 60) time60Btn.classList.add('selected');\
+            if (seconds === 90) time90Btn.classList.add('selected');\
+            if (seconds === 120) time120Btn.classList.add('selected');\
+            \
+            timeModeChanged = true;\
+        \}\
+\
+        // \uc0\u1054 \u1073 \u1085 \u1086 \u1074 \u1083 \u1077 \u1085 \u1080 \u1077  \u1086 \u1090 \u1086 \u1073 \u1088 \u1072 \u1078 \u1077 \u1085 \u1080 \u1103  \u1078 \u1080 \u1079 \u1085 \u1077 \u1081 \
+        function updateHearts() \{\
+            heartsContainer.innerHTML = '';\
+            for (let i = 0; i < player.maxHealth; i++) \{\
+                const heart = document.createElement('div');\
+                heart.className = 'heart';\
+                if (i < player.health) \{\
+                    heart.style.opacity = '1';\
+                \} else \{\
+                    heart.style.opacity = '0.3';\
+                \}\
+                heartsContainer.appendChild(heart);\
+            \}\
+        \}\
+\
+        // \uc0\u1054 \u1073 \u1085 \u1086 \u1074 \u1083 \u1077 \u1085 \u1080 \u1077  \u1086 \u1090 \u1086 \u1073 \u1088 \u1072 \u1078 \u1077 \u1085 \u1080 \u1103  \u1090 \u1088 \u1086 \u1092 \u1077 \u1077 \u1074 \
+        function updateTrophies() \{\
+            trophiesContainer.innerHTML = '';\
+            for (let i = 0; i < trophies; i++) \{\
+                const trophy = document.createElement('div');\
+                trophy.className = 'trophy';\
+                trophiesContainer.appendChild(trophy);\
+            \}\
+        \}\
+\
+        // \uc0\u1042 \u1099 \u1089 \u1090 \u1088 \u1077 \u1083  \u1080 \u1075 \u1088 \u1086 \u1082 \u1072 \
+        function fireBullet() \{\
+            if (player.fireCooldown <= 0) \{\
+                playerBullets.push(\{\
+                    x: player.x + Math.cos(player.angle) * player.radius,\
+                    y: player.y + Math.sin(player.angle) * player.radius,\
+                    radius: 5,\
+                    angle: player.angle,\
+                    speed: 10,\
+                    color: '#3498db'\
+                \});\
+                player.fireCooldown = player.fireRate;\
+                createParticles(player.x + Math.cos(player.angle) * player.radius, \
+                              player.y + Math.sin(player.angle) * player.radius, \
+                              '#3498db', 5);\
+            \}\
+        \}\
+\
+        // \uc0\u1047 \u1072 \u1087 \u1091 \u1089 \u1082  \u1080 \u1075 \u1088 \u1099 \
+        function startGame() \{\
+            player = \{\
+                x: canvas.width / 2,\
+                y: canvas.height / 2,\
+                radius: 20,\
+                speed: 5,\
+                baseSpeed: 5,\
+                angle: 0,\
+                cargo: 0,\
+                maxCargo: 5,\
+                armor: 0,\
+                health: 10,\
+                maxHealth: 10,\
+                fireRate: 0.5,\
+                fireCooldown: 0,\
+                upgrades: \{\
+                    speed: 0,\
+                    cargo: 0,\
+                    armor: 0\
+                \}\
+            \};\
+            \
+            trash = [];\
+            asteroids = [];\
+            particles = [];\
+            bosses = [];\
+            playerBullets = [];\
+            bossBullets = [];\
+            healthPacks = [];\
+            score = 0;\
+            gameTime = initialGameTime;\
+            survivalTime = 0;\
+            bossKills = 0;\
+            bossSpawnTimer = 0;\
+            timeModeChanged = false;\
+            \
+            scoreElement.textContent = score;\
+            timeElement.textContent = gameMode === 'time' ? gameTime : survivalTime;\
+            cargoElement.textContent = player.cargo;\
+            maxCargoElement.textContent = player.maxCargo;\
+            armorElement.textContent = player.armor;\
+            \
+            updateHearts();\
+            updateTrophies();\
+            updateCargoDisplay();\
+            \
+            // \uc0\u1057 \u1086 \u1079 \u1076 \u1072 \u1077 \u1084  \u1085 \u1072 \u1095 \u1072 \u1083 \u1100 \u1085 \u1099 \u1077  \u1086 \u1073 \u1098 \u1077 \u1082 \u1090 \u1099 \
+            for (let i = 0; i < 20; i++) \{\
+                spawnTrash();\
+            \}\
+            \
+            for (let i = 0; i < 8; i++) \{\
+                spawnAsteroid();\
+            \}\
+            \
+            startScreen.style.display = 'none';\
+            gameOverScreen.style.display = 'none';\
+            upgradeMenu.style.display = 'none';\
+            settingsMenu.style.display = 'none';\
+            restartButtonGame.style.display = 'block';\
+            gameRunning = true;\
+            lastTime = Date.now();\
+            \
+            requestAnimationFrame(gameLoop);\
+        \}\
+\
+        // \uc0\u1054 \u1089 \u1085 \u1086 \u1074 \u1085 \u1086 \u1081  \u1080 \u1075 \u1088 \u1086 \u1074 \u1086 \u1081  \u1094 \u1080 \u1082 \u1083 \
+        function gameLoop() \{\
+            if (!gameRunning) return;\
+            \
+            const now = Date.now();\
+            const deltaTime = (now - lastTime) / 1000;\
+            lastTime = now;\
+            \
+            update(deltaTime);\
+            render();\
+            \
+            requestAnimationFrame(gameLoop);\
+        \}\
+\
+        // \uc0\u1054 \u1073 \u1085 \u1086 \u1074 \u1083 \u1077 \u1085 \u1080 \u1077  \u1080 \u1075 \u1088 \u1099 \
+        function update(deltaTime) \{\
+            // \uc0\u1054 \u1073 \u1085 \u1086 \u1074 \u1083 \u1077 \u1085 \u1080 \u1077  \u1074 \u1088 \u1077 \u1084 \u1077 \u1085 \u1080  \u1074  \u1079 \u1072 \u1074 \u1080 \u1089 \u1080 \u1084 \u1086 \u1089 \u1090 \u1080  \u1086 \u1090  \u1088 \u1077 \u1078 \u1080 \u1084 \u1072 \
+            if (gameMode === 'time') \{\
+                if (!timeModeChanged) \{\
+                    gameTime -= deltaTime;\
+                \}\
+                timeModeChanged = false;\
+                \
+                timeElement.textContent = Math.max(0, Math.floor(gameTime));\
+                \
+                if (gameTime <= 0) \{\
+                    gameOver();\
+                    return;\
+                \}\
+            \} else \{\
+                // \uc0\u1056 \u1077 \u1078 \u1080 \u1084  \u1074 \u1099 \u1078 \u1080 \u1074 \u1072 \u1085 \u1080 \u1103  - \u1087 \u1088 \u1086 \u1089 \u1090 \u1086  \u1091 \u1074 \u1077 \u1083 \u1080 \u1095 \u1080 \u1074 \u1072 \u1077 \u1084  \u1074 \u1088 \u1077 \u1084 \u1103 \
+                survivalTime += deltaTime;\
+                timeElement.textContent = Math.floor(survivalTime);\
+            \}\
+            \
+            // \uc0\u1054 \u1073 \u1085 \u1086 \u1074 \u1083 \u1077 \u1085 \u1080 \u1077  \u1082 \u1091 \u1083 \u1076 \u1072 \u1091 \u1085 \u1072  \u1089 \u1090 \u1088 \u1077 \u1083 \u1100 \u1073 \u1099 \
+            if (player.fireCooldown > 0) \{\
+                player.fireCooldown -= deltaTime;\
+            \}\
+            \
+            // \uc0\u1057 \u1087 \u1072 \u1074 \u1085  \u1073 \u1086 \u1089 \u1089 \u1072  \u1082 \u1072 \u1078 \u1076 \u1099 \u1077  20 \u1089 \u1077 \u1082 \u1091 \u1085 \u1076 \
+            bossSpawnTimer += deltaTime;\
+            if (bossSpawnTimer >= 20 && bosses.length === 0) \{\
+                spawnBoss();\
+                bossSpawnTimer = 0;\
+            \}\
+            \
+            // \uc0\u1059 \u1087 \u1088 \u1072 \u1074 \u1083 \u1077 \u1085 \u1080 \u1077  \u1082 \u1086 \u1088 \u1072 \u1073 \u1083 \u1077 \u1084 \
+            if (keys['w'] || keys['ArrowUp']) \{\
+                player.x += Math.cos(player.angle) * player.speed;\
+                player.y += Math.sin(player.angle) * player.speed;\
+            \}\
+            if (keys['s'] || keys['ArrowDown']) \{\
+                player.x -= Math.cos(player.angle) * player.speed * 0.5;\
+                player.y -= Math.sin(player.angle) * player.speed * 0.5;\
+            \}\
+            if (keys['a'] || keys['ArrowLeft']) \{\
+                player.angle -= 0.1;\
+            \}\
+            if (keys['d'] || keys['ArrowRight']) \{\
+                player.angle += 0.1;\
+            \}\
+            \
+            // \uc0\u1054 \u1075 \u1088 \u1072 \u1085 \u1080 \u1095 \u1077 \u1085 \u1080 \u1077  \u1080 \u1075 \u1088 \u1086 \u1082 \u1072  \u1074  \u1087 \u1088 \u1077 \u1076 \u1077 \u1083 \u1072 \u1093  \u1101 \u1082 \u1088 \u1072 \u1085 \u1072 \
+            player.x = Math.max(player.radius, Math.min(canvas.width - player.radius, player.x));\
+            player.y = Math.max(player.radius, Math.min(canvas.height - player.radius, player.y));\
+            \
+            // \uc0\u1057 \u1087 \u1072 \u1074 \u1085  \u1084 \u1091 \u1089 \u1086 \u1088 \u1072 \
+            if (Math.random() < 0.03 && trash.length < 25) \{\
+                spawnTrash();\
+            \}\
+            \
+            // \uc0\u1057 \u1087 \u1072 \u1074 \u1085  \u1072 \u1089 \u1090 \u1077 \u1088 \u1086 \u1080 \u1076 \u1086 \u1074 \
+            if (Math.random() < 0.015 && asteroids.length < 10) \{\
+                spawnAsteroid();\
+            \}\
+            \
+            // \uc0\u1054 \u1073 \u1085 \u1086 \u1074 \u1083 \u1077 \u1085 \u1080 \u1077  \u1084 \u1091 \u1089 \u1086 \u1088 \u1072 \
+            for (let i = trash.length - 1; i >= 0; i--) \{\
+                // \uc0\u1055 \u1088 \u1086 \u1074 \u1077 \u1088 \u1082 \u1072  \u1089 \u1073 \u1086 \u1088 \u1072  \u1080 \u1075 \u1088 \u1086 \u1082 \u1086 \u1084 \
+                const dx = player.x - trash[i].x;\
+                const dy = player.y - trash[i].y;\
+                const distance = Math.sqrt(dx * dx + dy * dy);\
+                \
+                if (distance < player.radius + trash[i].radius && player.cargo < player.maxCargo) \{\
+                    // \uc0\u1054 \u1087 \u1072 \u1089 \u1085 \u1099 \u1081  \u1084 \u1091 \u1089 \u1086 \u1088  \u1085 \u1072 \u1085 \u1086 \u1089 \u1080 \u1090  \u1091 \u1088 \u1086 \u1085 \
+                    if (trash[i].type === 'DANGEROUS' && player.armor <= 0) \{\
+                        player.health--;\
+                        updateHearts();\
+                        if (player.health <= 0) \{\
+                            gameOver();\
+                            return;\
+                        \}\
+                        createParticles(player.x, player.y, '#e74c3c');\
+                        continue;\
+                    \}\
+                    \
+                    trash.splice(i, 1);\
+                    player.cargo++;\
+                    cargoElement.textContent = player.cargo;\
+                    updateCargoDisplay();\
+                    createParticles(trash[i].x, trash[i].y, trash[i].color);\
+                    continue;\
+                \}\
+            \}\
+            \
+            // \uc0\u1054 \u1073 \u1085 \u1086 \u1074 \u1083 \u1077 \u1085 \u1080 \u1077  \u1072 \u1089 \u1090 \u1077 \u1088 \u1086 \u1080 \u1076 \u1086 \u1074 \
+            for (let i = asteroids.length - 1; i >= 0; i--) \{\
+                asteroids[i].x += Math.cos(asteroids[i].angle) * asteroids[i].speed;\
+                asteroids[i].y += Math.sin(asteroids[i].angle) * asteroids[i].speed;\
+                \
+                // \uc0\u1054 \u1090 \u1089 \u1082 \u1086 \u1082  \u1086 \u1090  \u1075 \u1088 \u1072 \u1085 \u1080 \u1094 \
+                if (asteroids[i].x < asteroids[i].radius || asteroids[i].x > canvas.width - asteroids[i].radius) \{\
+                    asteroids[i].angle = Math.PI - asteroids[i].angle;\
+                \}\
+                if (asteroids[i].y < asteroids[i].radius || asteroids[i].y > canvas.height - asteroids[i].radius) \{\
+                    asteroids[i].angle = -asteroids[i].angle;\
+                \}\
+                \
+                // \uc0\u1055 \u1088 \u1086 \u1074 \u1077 \u1088 \u1082 \u1072  \u1089 \u1090 \u1086 \u1083 \u1082 \u1085 \u1086 \u1074 \u1077 \u1085 \u1080 \u1103  \u1089  \u1080 \u1075 \u1088 \u1086 \u1082 \u1086 \u1084 \
+                const dx = player.x - asteroids[i].x;\
+                const dy = player.y - asteroids[i].y;\
+                const distance = Math.sqrt(dx * dx + dy * dy);\
+                \
+                if (distance < player.radius + asteroids[i].radius) \{\
+                    // \uc0\u1055 \u1086 \u1090 \u1077 \u1088 \u1103  \u1095 \u1072 \u1089 \u1090 \u1080  \u1075 \u1088 \u1091 \u1079 \u1072  \u1087 \u1088 \u1080  \u1089 \u1090 \u1086 \u1083 \u1082 \u1085 \u1086 \u1074 \u1077 \u1085 \u1080 \u1080 \
+                    if (player.cargo > 0) \{\
+                        const lost = Math.min(3, player.cargo);\
+                        player.cargo -= lost;\
+                        cargoElement.textContent = player.cargo;\
+                        updateCargoDisplay();\
+                        \
+                        // \uc0\u1042 \u1099 \u1073 \u1088 \u1086 \u1089  \u1087 \u1086 \u1090 \u1077 \u1088 \u1103 \u1085 \u1085 \u1086 \u1075 \u1086  \u1084 \u1091 \u1089 \u1086 \u1088 \u1072 \
+                        for (let j = 0; j < lost; j++) \{\
+                            spawnTrashAt(player.x + (Math.random() * 40 - 20), player.y + (Math.random() * 40 - 20));\
+                        \}\
+                    \}\
+                    \
+                    // \uc0\u1059 \u1088 \u1086 \u1085  \u1073 \u1088 \u1086 \u1085 \u1077 \
+                    if (player.armor > 0) \{\
+                        player.armor -= 10;\
+                        if (player.armor < 0) player.armor = 0;\
+                        armorElement.textContent = player.armor;\
+                    \} else \{\
+                        player.health--;\
+                        updateHearts();\
+                        if (player.health <= 0) \{\
+                            gameOver();\
+                            return;\
+                        \}\
+                    \}\
+                    \
+                    // \uc0\u1069 \u1092 \u1092 \u1077 \u1082 \u1090  \u1089 \u1090 \u1086 \u1083 \u1082 \u1085 \u1086 \u1074 \u1077 \u1085 \u1080 \u1103 \
+                    createParticles(asteroids[i].x, asteroids[i].y, '#e74c3c');\
+                    \
+                    // \uc0\u1054 \u1090 \u1073 \u1088 \u1072 \u1089 \u1099 \u1074 \u1072 \u1085 \u1080 \u1077  \u1080 \u1075 \u1088 \u1086 \u1082 \u1072 \
+                    player.x += dx * 0.2;\
+                    player.y += dy * 0.2;\
+                \}\
+            \}\
+            \
+            // \uc0\u1054 \u1073 \u1085 \u1086 \u1074 \u1083 \u1077 \u1085 \u1080 \u1077  \u1073 \u1086 \u1089 \u1089 \u1086 \u1074 \
+            for (let i = bosses.length - 1; i >= 0; i--) \{\
+                const boss = bosses[i];\
+                \
+                // \uc0\u1044 \u1074 \u1080 \u1078 \u1077 \u1085 \u1080 \u1077  \u1082  \u1080 \u1075 \u1088 \u1086 \u1082 \u1091 \
+                const dx = player.x - boss.x;\
+                const dy = player.y - boss.y;\
+                const distance = Math.sqrt(dx * dx + dy * dy);\
+                \
+                if (distance > 0) \{\
+                    boss.x += (dx / distance) * boss.speed;\
+                    boss.y += (dy / distance) * boss.speed;\
+                \}\
+                \
+                // \uc0\u1040 \u1090 \u1072 \u1082 \u1072  \u1073 \u1086 \u1089 \u1089 \u1072 \
+                boss.attackTimer += deltaTime;\
+                if (boss.attackTimer >= boss.attackRate) \{\
+                    boss.attackTimer = 0;\
+                    // \uc0\u1057 \u1086 \u1079 \u1076 \u1072 \u1085 \u1080 \u1077  \u1084 \u1091 \u1089 \u1086 \u1088 \u1085 \u1086 \u1075 \u1086  \u1089 \u1085 \u1072 \u1088 \u1103 \u1076 \u1072 \
+                    bossBullets.push(\{\
+                        x: boss.x,\
+                        y: boss.y,\
+                        radius: 8,\
+                        angle: Math.atan2(player.y - boss.y, player.x - boss.x),\
+                        speed: 3,\
+                        color: '#e74c3c'\
+                    \});\
+                \}\
+                \
+                // \uc0\u1055 \u1088 \u1086 \u1074 \u1077 \u1088 \u1082 \u1072  \u1087 \u1086 \u1087 \u1072 \u1076 \u1072 \u1085 \u1080 \u1081  \u1087 \u1091 \u1083 \u1100  \u1080 \u1075 \u1088 \u1086 \u1082 \u1072  \u1074  \u1073 \u1086 \u1089 \u1089 \u1072 \
+                for (let j = playerBullets.length - 1; j >= 0; j--) \{\
+                    const bullet = playerBullets[j];\
+                    const bdx = boss.x - bullet.x;\
+                    const bdy = boss.y - bullet.y;\
+                    const bdist = Math.sqrt(bdx * bdx + bdy * bdy);\
+                    \
+                    if (bdist < boss.radius + bullet.radius) \{\
+                        playerBullets.splice(j, 1);\
+                        boss.health -= 5;\
+                        \
+                        if (boss.health <= 0) \{\
+                            // \uc0\u1059 \u1085 \u1080 \u1095 \u1090 \u1086 \u1078 \u1077 \u1085 \u1080 \u1077  \u1073 \u1086 \u1089 \u1089 \u1072 \
+                            bosses.splice(i, 1);\
+                            score += 200;\
+                            scoreElement.textContent = score;\
+                            bossKills++;\
+                            trophies++;\
+                            updateTrophies();\
+                            createParticles(boss.x, boss.y, '#e74c3c', 50);\
+                            // \uc0\u1057 \u1087 \u1072 \u1074 \u1085  \u1072 \u1087 \u1090 \u1077 \u1095 \u1082 \u1080 \
+                            spawnHealthPack(boss.x, boss.y);\
+                        \}\
+                        break;\
+                    \}\
+                \}\
+                \
+                // \uc0\u1057 \u1090 \u1086 \u1083 \u1082 \u1085 \u1086 \u1074 \u1077 \u1085 \u1080 \u1077  \u1089  \u1080 \u1075 \u1088 \u1086 \u1082 \u1086 \u1084 \
+                if (distance < player.radius + boss.radius) \{\
+                    // \uc0\u1041 \u1086 \u1083 \u1100 \u1096 \u1086 \u1081  \u1091 \u1088 \u1086 \u1085  \u1080 \u1075 \u1088 \u1086 \u1082 \u1091 \
+                    player.health -= 2;\
+                    updateHearts();\
+                    if (player.health <= 0) \{\
+                        gameOver();\
+                        return;\
+                    \}\
+                    \
+                    // \uc0\u1055 \u1086 \u1090 \u1077 \u1088 \u1103  \u1074 \u1089 \u1077 \u1075 \u1086  \u1075 \u1088 \u1091 \u1079 \u1072 \
+                    while (player.cargo > 0) \{\
+                        spawnTrashAt(player.x + (Math.random() * 40 - 20), player.y + (Math.random() * 40 - 20));\
+                        player.cargo--;\
+                    \}\
+                    cargoElement.textContent = player.cargo;\
+                    updateCargoDisplay();\
+                    \
+                    createParticles(player.x, player.y, '#e74c3c', 30);\
+                \}\
+            \}\
+            \
+            // \uc0\u1054 \u1073 \u1085 \u1086 \u1074 \u1083 \u1077 \u1085 \u1080 \u1077  \u1087 \u1091 \u1083 \u1100  \u1080 \u1075 \u1088 \u1086 \u1082 \u1072 \
+            for (let i = playerBullets.length - 1; i >= 0; i--) \{\
+                const bullet = playerBullets[i];\
+                bullet.x += Math.cos(bullet.angle) * bullet.speed;\
+                bullet.y += Math.sin(bullet.angle) * bullet.speed;\
+                \
+                // \uc0\u1059 \u1076 \u1072 \u1083 \u1077 \u1085 \u1080 \u1077  \u1079 \u1072  \u1087 \u1088 \u1077 \u1076 \u1077 \u1083 \u1072 \u1084 \u1080  \u1101 \u1082 \u1088 \u1072 \u1085 \u1072 \
+                if (bullet.x < -50 || bullet.x > canvas.width + 50 ||\
+                    bullet.y < -50 || bullet.y > canvas.height + 50) \{\
+                    playerBullets.splice(i, 1);\
+                    continue;\
+                \}\
+            \}\
+            \
+            // \uc0\u1054 \u1073 \u1085 \u1086 \u1074 \u1083 \u1077 \u1085 \u1080 \u1077  \u1087 \u1091 \u1083 \u1100  \u1073 \u1086 \u1089 \u1089 \u1072 \
+            for (let i = bossBullets.length - 1; i >= 0; i--) \{\
+                const bullet = bossBullets[i];\
+                bullet.x += Math.cos(bullet.angle) * bullet.speed;\
+                bullet.y += Math.sin(bullet.angle) * bullet.speed;\
+                \
+                // \uc0\u1059 \u1076 \u1072 \u1083 \u1077 \u1085 \u1080 \u1077  \u1079 \u1072  \u1087 \u1088 \u1077 \u1076 \u1077 \u1083 \u1072 \u1084 \u1080  \u1101 \u1082 \u1088 \u1072 \u1085 \u1072  \u1080 \u1083 \u1080  \u1087 \u1088 \u1080  \u1089 \u1090 \u1086 \u1083 \u1082 \u1085 \u1086 \u1074 \u1077 \u1085 \u1080 \u1080  \u1089 \u1086  \u1089 \u1090 \u1077 \u1085 \u1086 \u1081 \
+                if (bullet.x < 0 || bullet.x > canvas.width ||\
+                    bullet.y < 0 || bullet.y > canvas.height) \{\
+                    bossBullets.splice(i, 1);\
+                    continue;\
+                \}\
+                \
+                // \uc0\u1055 \u1088 \u1086 \u1074 \u1077 \u1088 \u1082 \u1072  \u1087 \u1086 \u1087 \u1072 \u1076 \u1072 \u1085 \u1080 \u1103  \u1074  \u1080 \u1075 \u1088 \u1086 \u1082 \u1072 \
+                const dx = player.x - bullet.x;\
+                const dy = player.y - bullet.y;\
+                const distance = Math.sqrt(dx * dx + dy * dy);\
+                \
+                if (distance < player.radius + bullet.radius) \{\
+                    bossBullets.splice(i, 1);\
+                    player.health--;\
+                    updateHearts();\
+                    if (player.health <= 0) \{\
+                        gameOver();\
+                        return;\
+                    \}\
+                    createParticles(player.x, player.y, '#e74c3c', 15);\
+                \}\
+            \}\
+            \
+            // \uc0\u1054 \u1073 \u1085 \u1086 \u1074 \u1083 \u1077 \u1085 \u1080 \u1077  \u1072 \u1087 \u1090 \u1077 \u1095 \u1077 \u1082 \
+            for (let i = healthPacks.length - 1; i >= 0; i--) \{\
+                const pack = healthPacks[i];\
+                \
+                // \uc0\u1055 \u1088 \u1086 \u1074 \u1077 \u1088 \u1082 \u1072  \u1089 \u1073 \u1086 \u1088 \u1072  \u1080 \u1075 \u1088 \u1086 \u1082 \u1086 \u1084 \
+                const dx = player.x - pack.x;\
+                const dy = player.y - pack.y;\
+                const distance = Math.sqrt(dx * dx + dy * dy);\
+                \
+                if (distance < player.radius + pack.radius) \{\
+                    healthPacks.splice(i, 1);\
+                    player.health = Math.min(player.maxHealth, player.health + 1);\
+                    updateHearts();\
+                    createParticles(pack.x, pack.y, '#2ecc71', 20);\
+                \}\
+            \}\
+            \
+            // \uc0\u1054 \u1073 \u1085 \u1086 \u1074 \u1083 \u1077 \u1085 \u1080 \u1077  \u1095 \u1072 \u1089 \u1090 \u1080 \u1094 \
+            for (let i = particles.length - 1; i >= 0; i--) \{\
+                particles[i].x += particles[i].vx;\
+                particles[i].y += particles[i].vy;\
+                particles[i].life--;\
+                \
+                if (particles[i].life <= 0) \{\
+                    particles.splice(i, 1);\
+                \}\
+            \}\
+            \
+            // \uc0\u1055 \u1088 \u1086 \u1074 \u1077 \u1088 \u1082 \u1072  \u1074 \u1099 \u1075 \u1088 \u1091 \u1079 \u1082 \u1080  \u1084 \u1091 \u1089 \u1086 \u1088 \u1072  \u1085 \u1072  \u1089 \u1090 \u1072 \u1085 \u1094 \u1080 \u1080 \
+            unloadCargo();\
+        \}\
+\
+        // \uc0\u1054 \u1090 \u1088 \u1080 \u1089 \u1086 \u1074 \u1082 \u1072  \u1080 \u1075 \u1088 \u1099 \
+        function render() \{\
+            // \uc0\u1054 \u1095 \u1080 \u1089 \u1090 \u1082 \u1072  \u1101 \u1082 \u1088 \u1072 \u1085 \u1072 \
+            ctx.fillStyle = mapColor;\
+            ctx.fillRect(0, 0, canvas.width, canvas.height);\
+            \
+            // \uc0\u1060 \u1086 \u1085 \u1086 \u1074 \u1099 \u1077  \u1079 \u1074 \u1077 \u1079 \u1076 \u1099 \
+            drawStars();\
+            \
+            // \uc0\u1054 \u1090 \u1088 \u1080 \u1089 \u1086 \u1074 \u1082 \u1072  \u1089 \u1090 \u1072 \u1085 \u1094 \u1080 \u1080 \
+            ctx.save();\
+            ctx.translate(station.x, station.y);\
+            ctx.rotate(Date.now() / 3000);\
+            ctx.fillStyle = '#2ecc71';\
+            ctx.beginPath();\
+            ctx.arc(0, 0, station.radius, 0, Math.PI * 2);\
+            ctx.fill();\
+            \
+            ctx.fillStyle = '#27ae60';\
+            ctx.beginPath();\
+            ctx.arc(0, 0, station.radius * 0.7, 0, Math.PI * 2);\
+            ctx.fill();\
+            \
+            ctx.fillStyle = '#4fc3f7';\
+            for (let i = 0; i < 6; i++) \{\
+                const angle = (i / 6) * Math.PI * 2;\
+                ctx.beginPath();\
+                ctx.arc(Math.cos(angle) * station.radius * 0.8, Math.sin(angle) * station.radius * 0.8, 5, 0, Math.PI * 2);\
+                ctx.fill();\
+            \}\
+            ctx.restore();\
+            \
+            // \uc0\u1054 \u1090 \u1088 \u1080 \u1089 \u1086 \u1074 \u1082 \u1072  \u1084 \u1091 \u1089 \u1086 \u1088 \u1072 \
+            for (const item of trash) \{\
+                ctx.save();\
+                ctx.translate(item.x, item.y);\
+                ctx.rotate(Date.now() / 1000);\
+                ctx.fillStyle = item.color;\
+                \
+                if (item.type === 'COMMON') \{\
+                    // \uc0\u1054 \u1073 \u1099 \u1095 \u1085 \u1099 \u1081  \u1084 \u1091 \u1089 \u1086 \u1088  - \u1096 \u1077 \u1089 \u1090 \u1077 \u1088 \u1077 \u1085 \u1082 \u1072 \
+                    ctx.beginPath();\
+                    for (let i = 0; i < 8; i++) \{\
+                        const angle1 = (i / 8) * Math.PI * 2;\
+                        const angle2 = ((i + 0.5) / 8) * Math.PI * 2;\
+                        ctx.lineTo(Math.cos(angle1) * item.radius, Math.sin(angle1) * item.radius);\
+                        ctx.lineTo(Math.cos(angle2) * item.radius * 0.6, Math.sin(angle2) * item.radius * 0.6);\
+                    \}\
+                    ctx.closePath();\
+                    ctx.fill();\
+                \} else if (item.type === 'VALUABLE') \{\
+                    // \uc0\u1062 \u1077 \u1085 \u1085 \u1099 \u1081  \u1084 \u1091 \u1089 \u1086 \u1088  - \u1082 \u1088 \u1080 \u1089 \u1090 \u1072 \u1083 \u1083 \
+                    ctx.beginPath();\
+                    ctx.moveTo(0, -item.radius);\
+                    ctx.lineTo(item.radius * 0.7, 0);\
+                    ctx.lineTo(0, item.radius);\
+                    ctx.lineTo(-item.radius * 0.7, 0);\
+                    ctx.closePath();\
+                    ctx.fill();\
+                    \
+                    ctx.fillStyle = '#ffffff';\
+                    ctx.beginPath();\
+                    ctx.moveTo(0, -item.radius * 0.5);\
+                    ctx.lineTo(item.radius * 0.35, 0);\
+                    ctx.lineTo(0, item.radius * 0.5);\
+                    ctx.lineTo(-item.radius * 0.35, 0);\
+                    ctx.closePath();\
+                    ctx.fill();\
+                \} else \{\
+                    // \uc0\u1054 \u1087 \u1072 \u1089 \u1085 \u1099 \u1081  \u1084 \u1091 \u1089 \u1086 \u1088  - \u1088 \u1072 \u1076 \u1080 \u1086 \u1072 \u1082 \u1090 \u1080 \u1074 \u1085 \u1099 \u1081  \u1079 \u1085 \u1072 \u1082 \
+                    ctx.beginPath();\
+                    ctx.arc(0, 0, item.radius, 0, Math.PI * 2);\
+                    ctx.fill();\
+                    \
+                    ctx.fillStyle = '#000';\
+                    ctx.beginPath();\
+                    ctx.arc(0, 0, item.radius * 0.4, 0, Math.PI * 2);\
+                    ctx.fill();\
+                    \
+                    ctx.fillStyle = '#e74c3c';\
+                    for (let i = 0; i < 3; i++) \{\
+                        const angle = (i / 3) * Math.PI * 2;\
+                        ctx.beginPath();\
+                        ctx.moveTo(0, 0);\
+                        ctx.lineTo(Math.cos(angle) * item.radius, Math.sin(angle) * item.radius);\
+                        ctx.lineTo(Math.cos(angle + Math.PI/3) * item.radius, Math.sin(angle + Math.PI/3) * item.radius);\
+                        ctx.closePath();\
+                        ctx.fill();\
+                    \}\
+                \}\
+                ctx.restore();\
+            \}\
+            \
+            // \uc0\u1054 \u1090 \u1088 \u1080 \u1089 \u1086 \u1074 \u1082 \u1072  \u1072 \u1089 \u1090 \u1077 \u1088 \u1086 \u1080 \u1076 \u1086 \u1074 \
+            for (const asteroid of asteroids) \{\
+                ctx.save();\
+                ctx.translate(asteroid.x, asteroid.y);\
+                ctx.rotate(Date.now() / 2000);\
+                ctx.fillStyle = '#95a5a6';\
+                ctx.beginPath();\
+                for (let i = 0; i < 8; i++) \{\
+                    const angle = (i / 8) * Math.PI * 2;\
+                    const r = asteroid.radius * (0.7 + Math.sin(angle * 2) * 0.3);\
+                    if (i === 0) \{\
+                        ctx.moveTo(Math.cos(angle) * r, Math.sin(angle) * r);\
+                    \} else \{\
+                        ctx.lineTo(Math.cos(angle) * r, Math.sin(angle) * r);\
+                    \}\
+                \}\
+                ctx.closePath();\
+                ctx.fill();\
+                ctx.restore();\
+            \}\
+            \
+            // \uc0\u1054 \u1090 \u1088 \u1080 \u1089 \u1086 \u1074 \u1082 \u1072  \u1073 \u1086 \u1089 \u1089 \u1086 \u1074 \
+            for (const boss of bosses) \{\
+                ctx.save();\
+                ctx.translate(boss.x, boss.y);\
+                \
+                // \uc0\u1058 \u1077 \u1083 \u1086  \u1073 \u1086 \u1089 \u1089 \u1072 \
+                ctx.fillStyle = '#8e44ad';\
+                ctx.beginPath();\
+                ctx.arc(0, 0, boss.radius, 0, Math.PI * 2);\
+                ctx.fill();\
+                \
+                // \uc0\u1043 \u1083 \u1072 \u1079 \u1072 \
+                ctx.fillStyle = '#e74c3c';\
+                ctx.beginPath();\
+                ctx.arc(-boss.radius * 0.3, -boss.radius * 0.2, boss.radius * 0.15, 0, Math.PI * 2);\
+                ctx.arc(boss.radius * 0.3, -boss.radius * 0.2, boss.radius * 0.15, 0, Math.PI * 2);\
+                ctx.fill();\
+                \
+                // \uc0\u1056 \u1086 \u1090 \
+                ctx.fillStyle = '#c0392b';\
+                ctx.beginPath();\
+                ctx.arc(0, boss.radius * 0.1, boss.radius * 0.3, 0, Math.PI);\
+                ctx.fill();\
+                \
+                // \uc0\u1056 \u1091 \u1082 \u1080 -\u1079 \u1072 \u1093 \u1074 \u1072 \u1090 \u1099 \
+                ctx.strokeStyle = '#8e44ad';\
+                ctx.lineWidth = 5;\
+                for (let i = 0; i < 4; i++) \{\
+                    const angle = (i / 4) * Math.PI * 2 + Date.now() / 500;\
+                    ctx.beginPath();\
+                    ctx.moveTo(Math.cos(angle) * boss.radius * 0.7, Math.sin(angle) * boss.radius * 0.7);\
+                    ctx.lineTo(Math.cos(angle) * boss.radius * 1.5, Math.sin(angle) * boss.radius * 1.5);\
+                    ctx.stroke();\
+                \}\
+                ctx.restore();\
+                \
+                // \uc0\u1055 \u1086 \u1083 \u1086 \u1089 \u1082 \u1072  \u1079 \u1076 \u1086 \u1088 \u1086 \u1074 \u1100 \u1103 \
+                if (boss.health < boss.maxHealth) \{\
+                    const healthWidth = 100 * (boss.health / boss.maxHealth);\
+                    ctx.fillStyle = '#333';\
+                    ctx.fillRect(boss.x - 50, boss.y - boss.radius - 20, 100, 10);\
+                    ctx.fillStyle = '#e74c3c';\
+                    ctx.fillRect(boss.x - 50, boss.y - boss.radius - 20, healthWidth, 10);\
+                \}\
+            \}\
+            \
+            // \uc0\u1054 \u1090 \u1088 \u1080 \u1089 \u1086 \u1074 \u1082 \u1072  \u1087 \u1091 \u1083 \u1100  \u1080 \u1075 \u1088 \u1086 \u1082 \u1072 \
+            for (const bullet of playerBullets) \{\
+                ctx.save();\
+                ctx.translate(bullet.x, bullet.y);\
+                ctx.rotate(bullet.angle);\
+                ctx.fillStyle = bullet.color;\
+                ctx.beginPath();\
+                ctx.moveTo(bullet.radius, 0);\
+                ctx.lineTo(-bullet.radius * 0.7, bullet.radius * 0.7);\
+                ctx.lineTo(-bullet.radius * 0.5, 0);\
+                ctx.lineTo(-bullet.radius * 0.7, -bullet.radius * 0.7);\
+                ctx.closePath();\
+                ctx.fill();\
+                ctx.restore();\
+            \}\
+            \
+            // \uc0\u1054 \u1090 \u1088 \u1080 \u1089 \u1086 \u1074 \u1082 \u1072  \u1087 \u1091 \u1083 \u1100  \u1073 \u1086 \u1089 \u1089 \u1072 \
+            for (const bullet of bossBullets) \{\
+                ctx.save();\
+                ctx.translate(bullet.x, bullet.y);\
+                ctx.rotate(bullet.angle);\
+                ctx.fillStyle = bullet.color;\
+                ctx.beginPath();\
+                ctx.moveTo(bullet.radius, 0);\
+                ctx.lineTo(-bullet.radius * 0.7, bullet.radius * 0.7);\
+                ctx.lineTo(-bullet.radius * 0.5, 0);\
+                ctx.lineTo(-bullet.radius * 0.7, -bullet.radius * 0.7);\
+                ctx.closePath();\
+                ctx.fill();\
+                ctx.restore();\
+            \}\
+            \
+            // \uc0\u1054 \u1090 \u1088 \u1080 \u1089 \u1086 \u1074 \u1082 \u1072  \u1072 \u1087 \u1090 \u1077 \u1095 \u1077 \u1082 \
+            for (const pack of healthPacks) \{\
+                ctx.save();\
+                ctx.translate(pack.x, pack.y);\
+                ctx.fillStyle = '#e74c3c';\
+                ctx.beginPath();\
+                ctx.moveTo(0, -pack.radius);\
+                ctx.lineTo(pack.radius * 0.7, pack.radius * 0.4);\
+                ctx.lineTo(pack.radius * 0.3, pack.radius * 0.4);\
+                ctx.lineTo(pack.radius * 0.3, pack.radius);\
+                ctx.lineTo(-pack.radius * 0.3, pack.radius);\
+                ctx.lineTo(-pack.radius * 0.3, pack.radius * 0.4);\
+                ctx.lineTo(-pack.radius * 0.7, pack.radius * 0.4);\
+                ctx.closePath();\
+                ctx.fill();\
+                \
+                ctx.fillStyle = '#fff';\
+                ctx.beginPath();\
+                ctx.moveTo(0, -pack.radius * 0.7);\
+                ctx.lineTo(pack.radius * 0.5, pack.radius * 0.2);\
+                ctx.lineTo(pack.radius * 0.2, pack.radius * 0.2);\
+                ctx.lineTo(pack.radius * 0.2, pack.radius * 0.7);\
+                ctx.lineTo(-pack.radius * 0.2, pack.radius * 0.7);\
+                ctx.lineTo(-pack.radius * 0.2, pack.radius * 0.2);\
+                ctx.lineTo(-pack.radius * 0.5, pack.radius * 0.2);\
+                ctx.closePath();\
+                ctx.fill();\
+                ctx.restore();\
+            \}\
+            \
+            // \uc0\u1054 \u1090 \u1088 \u1080 \u1089 \u1086 \u1074 \u1082 \u1072  \u1080 \u1075 \u1088 \u1086 \u1082 \u1072 \
+            ctx.save();\
+            ctx.translate(player.x, player.y);\
+            ctx.rotate(player.angle);\
+            \
+            // \uc0\u1050 \u1086 \u1088 \u1087 \u1091 \u1089  \u1082 \u1086 \u1088 \u1072 \u1073 \u1083 \u1103 \
+            ctx.fillStyle = '#3498db';\
+            ctx.beginPath();\
+            ctx.moveTo(player.radius, 0);\
+            ctx.lineTo(-player.radius * 0.7, player.radius * 0.7);\
+            ctx.lineTo(-player.radius * 0.5, 0);\
+            ctx.lineTo(-player.radius * 0.7, -player.radius * 0.7);\
+            ctx.closePath();\
+            ctx.fill();\
+            \
+            // \uc0\u1050 \u1072 \u1073 \u1080 \u1085 \u1072 \
+            ctx.fillStyle = '#2980b9';\
+            ctx.beginPath();\
+            ctx.arc(-player.radius * 0.2, 0, player.radius * 0.3, 0, Math.PI * 2);\
+            ctx.fill();\
+            \
+            // \uc0\u1044 \u1074 \u1080 \u1075 \u1072 \u1090 \u1077 \u1083 \u1100  (\u1072 \u1085 \u1080 \u1084 \u1072 \u1094 \u1080 \u1103 )\
+            ctx.fillStyle = ['#f39c12', '#f1c40f', '#e67e22'][Math.floor(Date.now() / 100) % 3];\
+            ctx.beginPath();\
+            ctx.moveTo(-player.radius * 0.5, -player.radius * 0.3);\
+            ctx.lineTo(-player.radius, 0);\
+            ctx.lineTo(-player.radius * 0.5, player.radius * 0.3);\
+            ctx.closePath();\
+            ctx.fill();\
+            \
+            // \uc0\u1054 \u1090 \u1086 \u1073 \u1088 \u1072 \u1078 \u1077 \u1085 \u1080 \u1077  \u1075 \u1088 \u1091 \u1079 \u1072 \
+            if (player.cargo > 0) \{\
+                ctx.fillStyle = '#4fc3f7';\
+                ctx.fillRect(-15, -player.radius - 15, 30, 10);\
+                ctx.fillStyle = '#0288d1';\
+                ctx.fillRect(-15, -player.radius - 15, (player.cargo / player.maxCargo) * 30, 10);\
+            \}\
+            \
+            // \uc0\u1054 \u1090 \u1086 \u1073 \u1088 \u1072 \u1078 \u1077 \u1085 \u1080 \u1077  \u1073 \u1088 \u1086 \u1085 \u1080 \
+            if (player.armor > 0) \{\
+                ctx.strokeStyle = '#7f8c8d';\
+                ctx.lineWidth = 3;\
+                ctx.beginPath();\
+                ctx.arc(0, 0, player.radius + 5, 0, Math.PI * 2 * (player.armor / (25 + player.upgrades.armor * 25)));\
+                ctx.stroke();\
+            \}\
+            ctx.restore();\
+            \
+            // \uc0\u1054 \u1090 \u1088 \u1080 \u1089 \u1086 \u1074 \u1082 \u1072  \u1095 \u1072 \u1089 \u1090 \u1080 \u1094 \
+            for (const particle of particles) \{\
+                ctx.fillStyle = particle.color;\
+                ctx.globalAlpha = particle.life / particle.maxLife;\
+                ctx.beginPath();\
+                ctx.arc(particle.x, particle.y, particle.size, 0, Math.PI * 2);\
+                ctx.fill();\
+            \}\
+            ctx.globalAlpha = 1;\
+        \}\
+\
+        // \uc0\u1057 \u1086 \u1079 \u1076 \u1072 \u1085 \u1080 \u1077  \u1095 \u1072 \u1089 \u1090 \u1080 \u1094  \u1101 \u1092 \u1092 \u1077 \u1082 \u1090 \u1086 \u1074 \
+        function createParticles(x, y, color, count = 20) \{\
+            for (let i = 0; i < count; i++) \{\
+                particles.push(\{\
+                    x: x,\
+                    y: y,\
+                    vx: Math.random() * 6 - 3,\
+                    vy: Math.random() * 6 - 3,\
+                    size: 2 + Math.random() * 3,\
+                    color: color,\
+                    life: 30 + Math.random() * 30,\
+                    maxLife: 60\
+                \});\
+            \}\
+        \}\
+\
+        // \uc0\u1042 \u1099 \u1075 \u1088 \u1091 \u1079 \u1082 \u1072  \u1084 \u1091 \u1089 \u1086 \u1088 \u1072  \u1085 \u1072  \u1089 \u1090 \u1072 \u1085 \u1094 \u1080 \u1080 \
+        function unloadCargo() \{\
+            const dx = player.x - station.x;\
+            const dy = player.y - station.y;\
+            const distance = Math.sqrt(dx * dx + dy * dy);\
+            \
+            if (distance < player.radius + station.radius && player.cargo > 0) \{\
+                // \uc0\u1056 \u1072 \u1079 \u1085 \u1099 \u1077  \u1073 \u1086 \u1085 \u1091 \u1089 \u1099  \u1079 \u1072  \u1088 \u1072 \u1079 \u1085 \u1099 \u1081  \u1084 \u1091 \u1089 \u1086 \u1088 \
+                let bonus = 0;\
+                if (Math.random() < 0.1) \{\
+                    // \uc0\u1064 \u1072 \u1085 \u1089  \u1085 \u1072 \u1081 \u1090 \u1080  \u1094 \u1077 \u1085 \u1085 \u1099 \u1081  \u1084 \u1091 \u1089 \u1086 \u1088 \
+                    bonus = TRASH_TYPES.VALUABLE.value;\
+                \} else \{\
+                    bonus = TRASH_TYPES.COMMON.value;\
+                \}\
+                \
+                score += player.cargo * bonus;\
+                scoreElement.textContent = score;\
+                player.cargo = 0;\
+                cargoElement.textContent = player.cargo;\
+                updateCargoDisplay();\
+                createParticles(station.x, station.y, '#2ecc71');\
+            \}\
+        \}\
+\
+        // \uc0\u1057 \u1087 \u1072 \u1074 \u1085  \u1084 \u1091 \u1089 \u1086 \u1088 \u1072 \
+        function spawnTrash() \{\
+            const types = ['COMMON', 'DANGEROUS', 'VALUABLE'];\
+            const weights = [0.7, 0.2, 0.1]; // \uc0\u1042 \u1077 \u1088 \u1086 \u1103 \u1090 \u1085 \u1086 \u1089 \u1090 \u1080  \u1087 \u1086 \u1103 \u1074 \u1083 \u1077 \u1085 \u1080 \u1103 \
+            let rand = Math.random();\
+            let typeIndex = 0;\
+            \
+            for (let i = 0; i < weights.length; i++) \{\
+                if (rand < weights[i]) \{\
+                    typeIndex = i;\
+                    break;\
+                \}\
+                rand -= weights[i];\
+            \}\
+            \
+            const type = types[typeIndex];\
+            \
+            trash.push(\{\
+                x: Math.random() * (canvas.width - 40) + 20,\
+                y: Math.random() * (canvas.height - 40) + 20,\
+                radius: TRASH_TYPES[type].radius,\
+                type: type,\
+                color: TRASH_TYPES[type].color,\
+                angle: Math.random() * Math.PI * 2\
+            \});\
+        \}\
+\
+        // \uc0\u1057 \u1087 \u1072 \u1074 \u1085  \u1084 \u1091 \u1089 \u1086 \u1088 \u1072  \u1074  \u1082 \u1086 \u1085 \u1082 \u1088 \u1077 \u1090 \u1085 \u1086 \u1081  \u1087 \u1086 \u1079 \u1080 \u1094 \u1080 \u1080 \
+        function spawnTrashAt(x, y, forceType) \{\
+            const type = forceType || ['COMMON', 'DANGEROUS', 'VALUABLE'][Math.floor(Math.random() * 3)];\
+            \
+            trash.push(\{\
+                x: x,\
+                y: y,\
+                radius: TRASH_TYPES[type].radius,\
+                type: type,\
+                color: TRASH_TYPES[type].color,\
+                angle: Math.random() * Math.PI * 2\
+            \});\
+        \}\
+\
+        // \uc0\u1057 \u1087 \u1072 \u1074 \u1085  \u1072 \u1089 \u1090 \u1077 \u1088 \u1086 \u1080 \u1076 \u1072 \
+        function spawnAsteroid() \{\
+            let x, y;\
+            // \uc0\u1057 \u1087 \u1072 \u1074 \u1085  \u1079 \u1072  \u1087 \u1088 \u1077 \u1076 \u1077 \u1083 \u1072 \u1084 \u1080  \u1101 \u1082 \u1088 \u1072 \u1085 \u1072 \
+            if (Math.random() < 0.5) \{\
+                x = Math.random() < 0.5 ? -30 : canvas.width + 30;\
+                y = Math.random() * canvas.height;\
+            \} else \{\
+                x = Math.random() * canvas.width;\
+                y = Math.random() < 0.5 ? -30 : canvas.height + 30;\
+            \}\
+            \
+            asteroids.push(\{\
+                x: x,\
+                y: y,\
+                radius: 20 + Math.random() * 30,\
+                speed: 1 + Math.random() * 2,\
+                angle: Math.random() * Math.PI * 2\
+            \});\
+        \}\
+\
+        // \uc0\u1057 \u1087 \u1072 \u1074 \u1085  \u1073 \u1086 \u1089 \u1089 \u1072 \
+        function spawnBoss() \{\
+            let x, y;\
+            // \uc0\u1057 \u1087 \u1072 \u1074 \u1085  \u1079 \u1072  \u1087 \u1088 \u1077 \u1076 \u1077 \u1083 \u1072 \u1084 \u1080  \u1101 \u1082 \u1088 \u1072 \u1085 \u1072 \
+            if (Math.random() < 0.5) \{\
+                x = Math.random() < 0.5 ? -50 : canvas.width + 50;\
+                y = Math.random() * canvas.height;\
+            \} else \{\
+                x = Math.random() * canvas.width;\
+                y = Math.random() < 0.5 ? -50 : canvas.height + 50;\
+            \}\
+            \
+            const levelScale = 1 + (bossKills * 0.2);\
+            \
+            bosses.push(\{\
+                x: x,\
+                y: y,\
+                radius: 30 * levelScale,\
+                speed: 1.5,\
+                health: 100 * levelScale,\
+                maxHealth: 100 * levelScale,\
+                attackTimer: 0,\
+                attackRate: 2 - (levelScale * 0.2)\
+            \});\
+        \}\
+\
+        // \uc0\u1057 \u1087 \u1072 \u1074 \u1085  \u1072 \u1087 \u1090 \u1077 \u1095 \u1082 \u1080 \
+        function spawnHealthPack(x, y) \{\
+            healthPacks.push(\{\
+                x: x,\
+                y: y,\
+                radius: 15\
+            \});\
+        \}\
+\
+        // \uc0\u1059 \u1083 \u1091 \u1095 \u1096 \u1077 \u1085 \u1080 \u1077  \u1093 \u1072 \u1088 \u1072 \u1082 \u1090 \u1077 \u1088 \u1080 \u1089 \u1090 \u1080 \u1082 \
+        function upgrade(type) \{\
+            let cost = 0;\
+            \
+            switch (type) \{\
+                case 'speed':\
+                    cost = 50 + player.upgrades.speed * 25;\
+                    if (score >= cost) \{\
+                        score -= cost;\
+                        player.upgrades.speed++;\
+                        player.baseSpeed += 1;\
+                        player.speed = player.baseSpeed;\
+                        scoreElement.textContent = score;\
+                        upgradeSpeedBtn.textContent = `\uc0\u1057 \u1082 \u1086 \u1088 \u1086 \u1089 \u1090 \u1100  (+1) - $\{50 + player.upgrades.speed * 25\} \u1086 \u1095 \u1082 \u1086 \u1074 `;\
+                    \}\
+                    break;\
+                    \
+                case 'cargo':\
+                    cost = 100 + player.upgrades.cargo * 50;\
+                    if (score >= cost) \{\
+                        score -= cost;\
+                        player.upgrades.cargo++;\
+                        player.maxCargo += 2;\
+                        maxCargoElement.textContent = player.maxCargo;\
+                        maxCargoCountElement.textContent = player.maxCargo;\
+                        scoreElement.textContent = score;\
+                        upgradeCargoBtn.textContent = `\uc0\u1043 \u1088 \u1091 \u1079 \u1086 \u1087 \u1086 \u1076 \u1098 \u1077 \u1084 \u1085 \u1086 \u1089 \u1090 \u1100  (+2) - $\{100 + player.upgrades.cargo * 50\} \u1086 \u1095 \u1082 \u1086 \u1074 `;\
+                    \}\
+                    break;\
+                    \
+                case 'armor':\
+                    cost = 75 + player.upgrades.armor * 25;\
+                    if (score >= cost) \{\
+                        score -= cost;\
+                        player.upgrades.armor++;\
+                        player.armor += 25;\
+                        armorElement.textContent = player.armor;\
+                        scoreElement.textContent = score;\
+                        upgradeArmorBtn.textContent = `\uc0\u1041 \u1088 \u1086 \u1085 \u1103  (+25) - $\{75 + player.upgrades.armor * 25\} \u1086 \u1095 \u1082 \u1086 \u1074 `;\
+                    \}\
+                    break;\
+            \}\
+        \}\
+\
+        // \uc0\u1054 \u1090 \u1088 \u1080 \u1089 \u1086 \u1074 \u1082 \u1072  \u1092 \u1086 \u1085 \u1086 \u1074 \u1099 \u1093  \u1079 \u1074 \u1077 \u1079 \u1076 \
+        function drawStars() \{\
+            ctx.fillStyle = document.body.classList.contains('light-mode') ? '#333' : '#fff';\
+            for (let i = 0; i < 200; i++) \{\
+                const x = Math.random() * canvas.width;\
+                const y = Math.random() * canvas.height;\
+                const size = Math.random() * 1.5;\
+                const alpha = 0.2 + Math.random() * 0.8;\
+                ctx.globalAlpha = alpha;\
+                ctx.fillRect(x, y, size, size);\
+            \}\
+            ctx.globalAlpha = 1;\
+        \}\
+\
+        // \uc0\u1050 \u1086 \u1085 \u1077 \u1094  \u1080 \u1075 \u1088 \u1099 \
+        function gameOver() \{\
+            gameRunning = false;\
+            finalScoreElement.textContent = score;\
+            bossKillsElement.textContent = bossKills;\
+            finalTrophiesElement.textContent = trophies;\
+            survivalTimeElement.textContent = Math.floor(gameMode === 'time' ? initialGameTime - gameTime : survivalTime);\
+            gameOverScreen.style.display = 'flex';\
+            restartButtonGame.style.display = 'none';\
+        \}\
+\
+        // \uc0\u1055 \u1088 \u1086 \u1074 \u1077 \u1088 \u1103 \u1077 \u1084  \u1089 \u1086 \u1093 \u1088 \u1072 \u1085 \u1077 \u1085 \u1085 \u1091 \u1102  \u1090 \u1077 \u1084 \u1091  \u1087 \u1088 \u1080  \u1079 \u1072 \u1075 \u1088 \u1091 \u1079 \u1082 \u1077 \
+        checkSavedTheme();\
+        checkMobile();\
+    </script>\
+</body>\
+</html>}
